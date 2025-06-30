@@ -19,6 +19,8 @@ function isLnmiitEmail(email) {
   }
   return true;
 }
+
+// TO REGISTER FOR BTP  
 export const register = catchAsyncErrors(async (req, res, next) => {
   const { name, email, phone, password, role, branch } = req.body;
   if (!name || !email || !phone || !password || !role) {
@@ -46,18 +48,22 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 201, res, "User Registered!");
 });
 
+
+//TO LOGIN INTO MY BTP ACCOUNT
 export const login = catchAsyncErrors(async (req, res, next) => {
   const { email, password, role } = req.body;
   if (!email || !password || !role) {
     return next(new ErrorHandler("Please provide email ,password and role."));
   }
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email }); // password is not selected here
   if (!user) {
-    return next(new ErrorHandler("Invalid Email Or Password.", 400));
+    return next(new ErrorHandler("Email is not registered.", 400));
   }
-  const isPasswordMatched = await user.comparePassword(password);
+  const userWithPassword = await User.findById(user._id).select("+password");
+
+  const isPasswordMatched = await bcrypt.compare(password, userWithPassword.password);
   if (!isPasswordMatched) {
-    return next(new ErrorHandler("Invalid Email Or Password.", 400));
+    return next(new ErrorHandler("Incorrect password.", 400));
   }
   if (user.role !== role) {
     return next(
@@ -67,10 +73,14 @@ export const login = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 201, res, "User Logged In!");
 });
 
+]
+
+//TO LOGOUT FROM MY BTP ACCOUNT
 export const logout = catchAsyncErrors(async (req, res, next) => {
   res
     .status(201)
     .cookie("token", "", {
+      // http = true means it prevent javascript running in browser to acces it 
       httpOnly: true,
       expires: new Date(Date.now()),
     })
@@ -88,21 +98,33 @@ export const getUser = catchAsyncErrors((req, res, next) => {
     user,
   });
 });
-export const getUserdetails = catchAsyncErrors(async (req, res, next) => {
+
+//HERE PASSWORD IS INCLUDED TO CHECK THE AUTHENTICATION THAT USER HIMSELF IS ACCESSING OTHERWISE ANYBODY WILL ACCESS THE USER DETAILS
+export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
   const { email } = req.params;
-  try {
-    const userdetails = await User.findOne({ email });
-    if (!userdetails) {
-      return next(new ErrorHandler("User not found.", 404));
-    }
-    res.status(200).json({
-      success: true,
-      userdetails,
-    });
-  } catch (error) {
-    return next(new ErrorHandler(`Invalid ID / CastError`, 404));
+  const { password } = req.body;
+
+  // Step 1: Find user with password
+  const user = await User.findOne({ email }).select("+password");
+  if (!user) {
+    return next(new ErrorHandler("User not found.", 404));
   }
+
+  // Step 2: Check password
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return next(new ErrorHandler("Incorrect password.", 401));
+  }
+
+  // Step 3: Remove password before sending
+  const { password: _, ...userWithoutPassword } = user.toObject();
+
+  res.status(200).json({
+    success: true,
+    userdetails: userWithoutPassword,
+  });
 });
+
 export const getAllFaculties = catchAsyncErrors(async (req, res, next) => {
   const facultydetails = await User.find({ role: "Faculty" });
 
