@@ -2,6 +2,10 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncError.js";
 import { Project } from "../models/projectSchema.js";
 import ErrorHandler from "../middlewares/error.js";
 import { User } from "../models/userSchema.js";
+
+
+
+// TO SEE ALL PROJECTS THAT HAVE NOT BEEN EXPIRED (OR STILL AVAILABLE)
 export const getAllProjects = catchAsyncErrors(async (req, res, next) => {
   const projects = await Project.find({ expired: false });
   res.status(200).json({
@@ -9,6 +13,8 @@ export const getAllProjects = catchAsyncErrors(async (req, res, next) => {
     projects,
   });
 });
+
+
 
 export const postProject = catchAsyncErrors(async (req, res, next) => {
   const { role } = req.user;
@@ -73,6 +79,9 @@ export const postProject = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+
+
+
 export const getMyProjects = catchAsyncErrors(async (req, res, next) => {
   const { role } = req.user;
   if (role === "Student") {
@@ -86,6 +95,8 @@ export const getMyProjects = catchAsyncErrors(async (req, res, next) => {
     myProjects,
   });
 });
+
+
 
 export const updateProject = catchAsyncErrors(async (req, res, next) => {
   const { role } = req.user;
@@ -111,13 +122,16 @@ export const updateProject = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+
+
+
 export const deleteProject = catchAsyncErrors(async (req, res, next) => {
   const { role } = req.user;
-  // if (role === "Student") {
-  //   return next(
-  //     new ErrorHandler("Student not allowed to access this resource.", 400)
-  //   );
-  // }
+   if (role === "Student") {
+     return next(
+  new ErrorHandler("Student not allowed to access this resource.", 400)
+    );
+   }
   const { id } = req.params;
   const project = await Project.findById(id);
   const postedas = project.postedBy;
