@@ -144,17 +144,17 @@ export const deleteProject = catchAsyncErrors(async (req, res, next) => {
     { new: true, runValidators: true }
   );
 
-  if (!project) {
+  if (project) {
     res.status(200).json({
       success: true,
       message: "Project Deleted!",
     });
   }
-  if (project) {
+  if (!project) {
     await project.deleteOne();
     res.status(200).json({
       success: true,
-      message: "Project Deleted!",
+      message: "Project was already deleted before we deleted !",
     });
   }
 });
