@@ -111,6 +111,12 @@ export const facultyGetAllApplications = catchAsyncErrors(
   }
 );
 
+
+
+
+
+
+
 export const studentGetAllApplications = catchAsyncErrors(
   async (req, res, next) => {
     const { role } = req.user;
@@ -127,6 +133,13 @@ export const studentGetAllApplications = catchAsyncErrors(
     });
   }
 );
+
+
+
+
+
+
+
 export const studentGetSingleApplication = catchAsyncErrors(
   async (req, res, next) => {
     const { id } = req.params;
@@ -141,6 +154,12 @@ export const studentGetSingleApplication = catchAsyncErrors(
     });
   }
 );
+
+
+
+
+
+
 
 export const studentDeleteApplication = catchAsyncErrors(
   async (req, res, next) => {
