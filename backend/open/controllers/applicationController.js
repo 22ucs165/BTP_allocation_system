@@ -4,6 +4,10 @@ import { Application } from "../models/applicationSchema.js";
 import { Project } from "../models/projectSchema.js";
 import cloudinary from "cloudinary";
 
+
+
+
+
 export const postApplication = catchAsyncErrors(async (req, res, next) => {
   const { role } = req.user;
   if (role === "Faculty") {
