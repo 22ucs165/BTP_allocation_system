@@ -2,6 +2,8 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncError.js";
 import { User } from "../models/userSchema.js";
 import ErrorHandler from "../middlewares/error.js";
 import { sendToken } from "../utils/jwtToken.js";
+
+// to check that given email is of lnmiit or not ?
 function isLnmiitEmail(email) {
   // Regular expression for validating the specific email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
