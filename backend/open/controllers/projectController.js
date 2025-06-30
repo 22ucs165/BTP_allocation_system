@@ -16,6 +16,7 @@ export const getAllProjects = catchAsyncErrors(async (req, res, next) => {
 
 
 
+
 export const postProject = catchAsyncErrors(async (req, res, next) => {
   const { role } = req.user;
   if (role === "Student") {
@@ -98,6 +99,8 @@ export const getMyProjects = catchAsyncErrors(async (req, res, next) => {
 
 
 
+
+
 export const updateProject = catchAsyncErrors(async (req, res, next) => {
   const { role } = req.user;
   if (role === "Student") {
@@ -121,6 +124,7 @@ export const updateProject = catchAsyncErrors(async (req, res, next) => {
     message: "Project Updated!",
   });
 });
+
 
 
 
@@ -159,7 +163,12 @@ export const deleteProject = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
+
+
+
+//when user wants one project
 export const getSingleProject = catchAsyncErrors(async (req, res, next) => {
+  // whatever is send form frontedn in url path is extracted from req.params fuction
   const { id } = req.params;
   try {
     const project = await Project.findById(id);
