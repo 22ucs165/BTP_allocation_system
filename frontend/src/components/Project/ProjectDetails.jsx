@@ -4,10 +4,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../../main";
 const ProjectDetails = () => {
-  const { id } = useParams();
   const [project, setProject] = useState({});
   const navigateTo = useNavigate();
 
+    const { id } = useParams();
   const { isAuthorized, user } = useContext(Context);
 
   useEffect(() => {
