@@ -10,9 +10,9 @@ import cloudinary from "cloudinary";
 
 export const postApplication = catchAsyncErrors(async (req, res, next) => {
   const { role } = req.user;
-  if (role === "Student") {
+  if (role === "Faculty") {
     return next(
-      new ErrorHandler("Student not allowed to access this resource.", 400)
+      new ErrorHandler("faculty not allowed to access this resource.", 400)
     );
   }
   if (!req.files || Object.keys(req.files).length === 0) {
